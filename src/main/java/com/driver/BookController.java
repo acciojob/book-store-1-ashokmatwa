@@ -51,12 +51,13 @@ public class BookController {
 //        return new ResponseEntity<>(book, HttpStatus.CREATED);
 //    }
 
-    // @Autowired
-    BookService bookService = new BookService();
+
     @PostMapping("/create-book")
     public ResponseEntity createBook(@RequestBody Book book){
-        Book newbook = bookService.createBook(book);
-        return new ResponseEntity<>(newbook, HttpStatus.CREATED);
+        book.setId(id);
+        bookList.add(book);
+        id++;
+        return new ResponseEntity<>(book, HttpStatus.CREATED);
     }
 
     // get request /get-book-by-id/{id}
@@ -64,8 +65,13 @@ public class BookController {
     // getBookById()
     @GetMapping("/get-book-by-id/{id}")
     public ResponseEntity getBookById(@PathVariable("id") String id){
-        Book newbook = bookService.findBookById(id);
-        return new ResponseEntity<>(newbook, HttpStatus.CREATED);
+        int id1 = Integer.parseInt(id);
+        for(Book book : bookList){
+            if(book.getId() == id1)
+                return new ResponseEntity<>(book, HttpStatus.CREATED);
+        }
+        //return new ResponseEntity<>(book, HttpStatus.CREATED);
+        return null;
     }
 
     // delete request /delete-book-by-id/{id}
@@ -73,23 +79,27 @@ public class BookController {
     // deleteBookById()
     @DeleteMapping("/delete-book-by-id/{id}")
     public ResponseEntity deleteBookById(@PathVariable("id") String id){
-        bookService.deleteBookById(id);
-        return  new ResponseEntity<>("success ", HttpStatus.FOUND);
+        for(Book book : bookList){
+            if(book.getId() == Integer.parseInt(id)){
+                bookList.remove(book);
+                return new ResponseEntity<>("success", HttpStatus.FOUND);
+            }
+        }
+        return  new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
     }
 
     // get request /get-all-books
     // getAllBooks()
     @GetMapping("/get-all-books")
     public ResponseEntity getAllBooks(){
-        List<Book> newbook = bookService.findAllBooks();
-        return new ResponseEntity<>(newbook, HttpStatus.CREATED);
+        return new ResponseEntity<>(bookList, HttpStatus.CREATED);
     }
 
     // delete request /delete-all-books
     // deleteAllBooks()
     @DeleteMapping("/delete-all-books")
     public ResponseEntity deleteAllBooks(){
-        bookService.deleteAllBooks();
+        bookList.clear();
         return new ResponseEntity<>("success ", HttpStatus.FOUND);
     }
 
@@ -98,8 +108,12 @@ public class BookController {
     // getBooksByAuthor()
     @GetMapping("/get-books-by-author")
     public ResponseEntity getBooksByAuthor(@RequestParam("author") String author){
-        List<Book> newbook = bookService.findBooksByAuthor(author);
-        return new ResponseEntity<>(newbook, HttpStatus.CREATED);
+        List<Book> list = new ArrayList<>();
+        for(Book book : bookList){
+            if(book.getAuthor().equals(author))
+                list.add(book);
+        }
+        return new ResponseEntity<>(list, HttpStatus.CREATED);
     }
 
     // get request /get-books-by-genre
@@ -107,8 +121,12 @@ public class BookController {
     // getBooksByGenre()
     @GetMapping("/get-books-by-genre")
     public ResponseEntity getBooksByGenre(@RequestParam("genre") String genre){
-        List<Book> newbook = bookService.findBooksByGenre(genre);
-        return new ResponseEntity<>(newbook, HttpStatus.CREATED);
+        List<Book> list = new ArrayList<>();
+        for(Book book : bookList){
+            if(book.getGenre().equals(genre))
+                list.add(book);
+        }
+        return new ResponseEntity<>(list, HttpStatus.CREATED);
     }
 
 }
