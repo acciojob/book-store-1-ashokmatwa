@@ -151,19 +151,29 @@ public class BookController {
     // delete request /delete-book-by-id/{id}
     // pass id as path variable
     // deleteBookById()
+//    @DeleteMapping("/delete-book-by-id/{id}")
+//    public ResponseEntity<String> deleteBookById(@PathVariable String id){
+//        int count = 0;
+//        for(int i=0;i<bookList.size();i++){
+//            if(bookList.get(i).getId()==Integer.parseInt(id)){
+//                bookList.remove(bookList.get(i));
+//                count++;
+//            }
+//        }
+//        if(count==1)
+//            return new ResponseEntity<>("Deleted", HttpStatus.FOUND);
+//        else
+//            return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+//    }
     @DeleteMapping("/delete-book-by-id/{id}")
-    public ResponseEntity<String> deleteBookById(@PathVariable String id){
-        int count = 0;
-        for(int i=0;i<bookList.size();i++){
-            if(bookList.get(i).getId()==Integer.parseInt(id)){
-                bookList.remove(bookList.get(i));
-                count++;
+    public ResponseEntity deleteBookById(@PathVariable("id") String id){
+        for(Book book : bookList){
+            if(book.getId() == Integer.parseInt(id)){
+                bookList.remove(book);
+                return new ResponseEntity<>("success", HttpStatus.FOUND);
             }
         }
-        if(count==1)
-            return new ResponseEntity<>("Deleted", HttpStatus.FOUND);
-        else
-            return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+        return  new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
     }
 
     // get request /get-all-books
